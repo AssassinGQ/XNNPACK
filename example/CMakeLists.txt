@@ -1,0 +1,11 @@
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
+include_directories(/mnt/data/workspace/OpenAI/google/XNNPACK/build/pthreadpool-source/include)
+include_directories(/mnt/data/workspace/OpenAI/google/XNNPACK/build/FP16-source/include)
+include_directories(/mnt/data/workspace/OpenAI/google/XNNPACK/build/googlebenchmark-source/include)
+include_directories(/mnt/data/workspace/OpenAI/google/XNNPACK/build/cpuinfo-source/include)
+include_directories(/mnt/data/workspace/OpenAI/google/XNNPACK/build/clog-source/include)
+
+add_executable(example main.cc $<TARGET_OBJECTS:all_microkernels>)
+target_link_libraries(example PRIVATE cpuinfo fp16 pthreadpool)

@@ -8,11 +8,40 @@
 // LICENSE file in the root directory of this source tree.
 
 #include <assert.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdarg.h>
 
 #include <immintrin.h>
 
 #include <xnnpack/spmm.h>
 
+static void xnnlog2(const char *msg, ...) {
+  char format[20 + strlen(msg)];
+  format[0] = '*';
+  format[1] = '*';
+  format[2] = '*';
+  format[3] = '*';
+  format[4] = '*';
+  format[5] = 'h';
+  format[6] = 'g';
+  format[7] = 'q';
+  format[8] = '-';
+  format[9] = 'd';
+  format[10] = 'e';
+  format[11] = 'b';
+  format[12] = 'u';
+  format[13] = 'g';
+  format[14] = ':';
+  format[15] = ' ';
+  format[16] = '\0';
+  strcat(format, msg);
+  strcat(format, "\r\n");
+  va_list ap;
+  va_start(ap, msg);
+  vprintf(format, ap);
+  va_end(ap);
+}
 
 void xnn_f32_spmm_minmax_ukernel_32x1__sse(
     size_t mc,

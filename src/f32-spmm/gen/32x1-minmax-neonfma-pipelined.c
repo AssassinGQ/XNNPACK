@@ -8,11 +8,40 @@
 // LICENSE file in the root directory of this source tree.
 
 #include <assert.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdarg.h>
 
 #include <arm_neon.h>
 
 #include <xnnpack/spmm.h>
 
+static void xnnlog(const char *msg, ...) {
+  char format[20 + strlen(msg)];
+  format[0] = '*';
+  format[1] = '*';
+  format[2] = '*';
+  format[3] = '*';
+  format[4] = '*';
+  format[5] = 'h';
+  format[6] = 'g';
+  format[7] = 'q';
+  format[8] = '-';
+  format[9] = 'd';
+  format[10] = 'e';
+  format[11] = 'b';
+  format[12] = 'u';
+  format[13] = 'g';
+  format[14] = ':';
+  format[15] = ' ';
+  format[16] = '\0';
+  strcat(format, msg);
+  strcat(format, "\r\n");
+  va_list ap;
+  va_start(ap, msg);
+  vprintf(format, ap);
+  va_end(ap);
+}
 
 void xnn_f32_spmm_minmax_ukernel_32x1__neonfma_pipelined(
     size_t mc,
@@ -25,6 +54,7 @@ void xnn_f32_spmm_minmax_ukernel_32x1__neonfma_pipelined(
     size_t output_stride,
     const union xnn_f32_minmax_params params[restrict XNN_MIN_ELEMENTS(1)])
 {
+  xnnlog("xnn_f32_spmm_minmax_ukernel_32x1__neonfma_pipelined --- mc(%zu) nc(%zu)", mc, nc);
   assert(mc != 0);
   assert(mc % sizeof(float) == 0);
   assert(nc != 0);
